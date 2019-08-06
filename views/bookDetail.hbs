@@ -1,0 +1,7 @@
+<h1>{{ book.title }} <span>{{ book.author }}</span></h1>
+<p>{{ book.description }}</p>
+<p>
+  {{#each rating}}
+  <span>{{this}}</span>
+  {{/each}}
+</p>
