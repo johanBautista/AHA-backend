@@ -11,6 +11,7 @@ const books = Array.from({ length: 40 }, () => ({
   author: faker.name.firstName(),
   rating: faker.random.number(1, 5),
 }));
+
 Book.collection
   .drop()
   .then(() => {
