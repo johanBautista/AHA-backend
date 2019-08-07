@@ -16,8 +16,11 @@ Book.collection
   .drop()
   .then(() => {
     console.log('deleted db');
-    return Book.insertMany(books);
   })
+  .catch((err) => {
+    console.log(err);
+  })
+  .then(() => Book.insertMany(books))
   .then(() => {
     console.log('inserted fake data');
     mongoose.connection.close();
