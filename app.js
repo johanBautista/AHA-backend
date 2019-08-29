@@ -4,10 +4,13 @@ const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const mongoose = require('mongoose');
+const session = require('express-session');
+const MongoStore = require('connect-mongo')(session);
 
 mongoose.connect('mongodb://localhost/miBiblio', { useNewUrlParser: true });
 
 const indexRouter = require('./routes/index');
+const authRouter = require('./routes/auth');
 const booksRouter = require('./routes/books');
 
 const app = express();
@@ -22,7 +25,26 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+app.use(
+  session({
+    store: new MongoStore({
+      mongooseConnection: mongoose.connection,
+      ttl: 24 * 60 * 60, // 1 day
+    }),
+    secret: 'ironhack',
+    resave: true,
+    saveUninitialized: true,
+    cookie: {
+      maxAge: 24 * 60 * 60 * 1000,
+    },
+  }),
+);
+app.use((req, res, next) => {
+  app.locals.currentUser = req.session.currentUser;
+  next();
+});
 app.use('/', indexRouter);
+app.use('/', authRouter);
 app.use('/books', booksRouter);
 
 // catch 404 and forward to error handler
