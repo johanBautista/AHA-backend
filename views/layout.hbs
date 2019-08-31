@@ -7,6 +7,12 @@
 </head>
 
 <body>
+  {{#if infoMessages}}
+  <p class="info">{{infoMessages}}</p>
+  {{/if}}
+  {{#if errorMessages }}
+  <p class="error">{{ errorMessages }}</p>
+  {{/if }}
   {{#if currentUser }}
   <p>name: {{ currentUser.username }}</p>
   <a href="/logout">Logout</a>

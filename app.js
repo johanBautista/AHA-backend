@@ -6,7 +6,10 @@ const logger = require('morgan');
 const mongoose = require('mongoose');
 const session = require('express-session');
 const MongoStore = require('connect-mongo')(session);
+const flash = require('connect-flash');
+const { notifications } = require('./middlewares');
 
+mongoose.set('useCreateIndex', true);
 mongoose.connect('mongodb://localhost/miBiblio', { useNewUrlParser: true });
 
 const indexRouter = require('./routes/index');
@@ -15,7 +18,6 @@ const booksRouter = require('./routes/books');
 
 const app = express();
 
-// view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'hbs');
 
@@ -39,10 +41,14 @@ app.use(
     },
   }),
 );
+
+app.use(flash());
+
 app.use((req, res, next) => {
   app.locals.currentUser = req.session.currentUser;
   next();
 });
+app.use(notifications(app));
 app.use('/', indexRouter);
 app.use('/', authRouter);
 app.use('/books', booksRouter);

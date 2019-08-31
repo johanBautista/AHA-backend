@@ -1,6 +1,8 @@
 const express = require('express');
 const bcrypt = require('bcrypt');
 
+const { checkUsernameAndPasswordNotEmpty } = require('../middlewares');
+
 const User = require('../models/User');
 
 const bcryptSalt = 10;
@@ -13,39 +15,24 @@ router.get('/signup', (req, res, next) => {
 });
 
 // create a user
-router.post('/signup', (req, res, next) => {
-  const { username, password } = req.body;
+router.post('/signup', checkUsernameAndPasswordNotEmpty, async (req, res, next) => {
+  const { username, password } = res.locals.auth;
+  try {
+    const user = await User.findOne({ username });
+    if (user) {
+      req.flash('error', 'Usuario ya existe');
+      res.redirect('/signup');
+    } else {
+      const salt = bcrypt.genSaltSync(bcryptSalt);
+      const hashedPassword = bcrypt.hashSync(password, salt);
 
-  // si los campos no estan vacio
-  if (username !== '' && password !== '') {
-    User.findOne({ username })
-      .then((user) => {
-        if (user) {
-          console.log('user existe', user);
-          // si existe el user error
-          res.render('signup', { error: 'usuario ya existe' });
-        } else {
-          console.log('user no existe', user);
-          // hash del password
-          const salt = bcrypt.genSaltSync(bcryptSalt);
-          const hashedPassword = bcrypt.hashSync(password, salt);
-          // creo el usuario
-          User.create({ username, hashedPassword })
-            .then(() => {
-              console.log('redirect');
-              // todo correcto
-              res.redirect('/books');
-            })
-            .catch((error) => {
-              throw error;
-            });
-        }
-      })
-      .catch((error) => {
-        res.render('signup', { error: 'error vuelve a intentarlo' });
-      });
-  } else {
-    res.render('signup', { error: 'campos no pueden estar vacios' });
+      await User.create({ username, hashedPassword });
+      req.flash('info', 'user created');
+      res.redirect('/books');
+    }
+  } catch (error) {
+    req.flash('error', 'try again');
+    res.redirect('/signup');
   }
 });
 
@@ -53,36 +40,27 @@ router.get('/login', (req, res, next) => {
   res.render('login');
 });
 
-router.post('/login', (req, res, next) => {
-  const { username, password } = req.body;
-  if (username !== '' && password !== '') {
-    User.findOne({ username })
-      .then((user) => {
-        if (user) {
-          if (bcrypt.compareSync(password, user.hashedPassword)) {
-            // password valido
-            // guardo la session
-            req.session.currentUser = user;
-            res.redirect('/books');
-          } else {
-            // password invalido
-            res.render('login', { error: 'usuario o contraseña incorrectos' });
-          }
-        } else {
-          res.redirect('/signup');
-        }
-      })
-      .catch(() => {
-        res.render('login', { error: 'error vuelve a intentarlo' });
-      });
-  } else {
-    res.render('login', { error: 'campos no pueden estar vacios' });
+router.post('/login', checkUsernameAndPasswordNotEmpty, async (req, res, next) => {
+  const { username, password } = res.locals.auth;
+  try {
+    const user = await User.findOne({ username });
+    if (user) {
+      if (bcrypt.compareSync(password, user.hashedPassword)) {
+        req.session.currentUser = user;
+        res.redirect('/books');
+      } else {
+        res.render('login', { error: 'usuario o contraseña incorrectos' });
+      }
+    } else {
+      res.redirect('/signup');
+    }
+  } catch (error) {
+    res.render('login', { error: 'error vuelve a intentarlo' });
   }
 });
 
 router.get('/logout', (req, res, next) => {
   req.session.destroy((err) => {
-    // cannot access session here
     if (err) {
       next(err);
     }
