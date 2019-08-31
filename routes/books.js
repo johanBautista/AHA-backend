@@ -1,5 +1,6 @@
 /* eslint-disable no-underscore-dangle */
 const express = require('express');
+const debug = require('debug')('biblio');
 const Book = require('../models/Book');
 
 const router = express.Router();
@@ -7,8 +8,10 @@ const checkIfLoggedIn = require('../middlewares/auth');
 
 /* GET books listing. */
 router.get('/', (req, res, next) => {
+  // debug('get endpoint /books');
   Book.find()
     .then((books) => {
+      // debug('find books %o', books);
       // console.log('books', books);
       res.render('books', { books });
     })
@@ -16,6 +19,7 @@ router.get('/', (req, res, next) => {
 });
 
 router.get('/new', checkIfLoggedIn, (req, res) => {
+  // debug('get endpoint /books/new ');
   res.render('new');
 });
 
