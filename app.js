@@ -15,6 +15,7 @@ mongoose.connect('mongodb://localhost/miBiblio', { useNewUrlParser: true });
 const indexRouter = require('./routes/index');
 const authRouter = require('./routes/auth');
 const booksRouter = require('./routes/books');
+const booksApiRouter = require('./routes/booksApi');
 
 const app = express();
 
@@ -52,6 +53,10 @@ app.use(notifications(app));
 app.use('/', indexRouter);
 app.use('/', authRouter);
 app.use('/books', booksRouter);
+app.use('/api/books', booksApiRouter);
+app.get('/testingajax', (req, res, next) => {
+  res.render('testajax');
+});
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
