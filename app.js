@@ -6,6 +6,7 @@ const logger = require('morgan');
 const mongoose = require('mongoose');
 const session = require('express-session');
 const MongoStore = require('connect-mongo')(session);
+const cors = require('cors');
 
 mongoose.set('useCreateIndex', true);
 mongoose.connect('mongodb://localhost/miBiblio', { useNewUrlParser: true });
@@ -33,6 +34,13 @@ app.use(
     cookie: {
       maxAge: 24 * 60 * 60 * 1000,
     },
+  }),
+);
+
+app.use(
+  cors({
+    credentials: true,
+    origin: ['http://localhost:3001'],
   }),
 );
 
