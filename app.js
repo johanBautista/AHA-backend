@@ -6,21 +6,14 @@ const logger = require('morgan');
 const mongoose = require('mongoose');
 const session = require('express-session');
 const MongoStore = require('connect-mongo')(session);
-const flash = require('connect-flash');
-const { notifications } = require('./middlewares');
 
 mongoose.set('useCreateIndex', true);
 mongoose.connect('mongodb://localhost/miBiblio', { useNewUrlParser: true });
 
-const indexRouter = require('./routes/index');
-const authRouter = require('./routes/auth');
-const booksRouter = require('./routes/books');
-const booksApiRouter = require('./routes/booksApi');
+// const authRouter = require('./routes/auth');
+const booksRouter = require('./routes/book');
 
 const app = express();
-
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'hbs');
 
 app.use(logger('dev'));
 app.use(express.json());
@@ -43,20 +36,13 @@ app.use(
   }),
 );
 
-app.use(flash());
+// app.use((req, res, next) => {
+//   app.locals.currentUser = req.session.currentUser;
+//   next();
+// });
 
-app.use((req, res, next) => {
-  app.locals.currentUser = req.session.currentUser;
-  next();
-});
-app.use(notifications(app));
-app.use('/', indexRouter);
-app.use('/', authRouter);
-app.use('/books', booksRouter);
-app.use('/api/books', booksApiRouter);
-app.get('/testingajax', (req, res, next) => {
-  res.render('testajax');
-});
+// app.use('/', authRouter);
+app.use('/api/books', booksRouter);
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
@@ -65,13 +51,9 @@ app.use((req, res, next) => {
 
 // error handler
 app.use((err, req, res, next) => {
-  // set locals, only providing error in development
-  res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
-
-  // render the error page
   res.status(err.status || 500);
-  res.render('error');
+  res.json(err);
 });
 
 module.exports = app;

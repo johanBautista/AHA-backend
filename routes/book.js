@@ -1,10 +1,10 @@
 /* eslint-disable no-underscore-dangle */
 const express = require('express');
-const debug = require('debug')('biblio');
+// const debug = require('debug')('biblio');
 const Book = require('../models/Book');
 
 const router = express.Router();
-const { checkIfLoggedIn } = require('../middlewares');
+// const { checkIfLoggedIn } = require('../middlewares');
 
 /* GET books listing. */
 router.get('/', async (req, res, next) => {
@@ -23,10 +23,7 @@ router.get('/:bookId', async (req, res, next) => {
     if (book) {
       res.json(book);
     } else {
-      const error = new Error('nada por aqui');
-      Error.status = 404;
-      // next(error);
-      throw error;
+      res.json({});
     }
   } catch (error) {
     next(error);
@@ -44,7 +41,7 @@ router.post('/', async (req, res, next) => {
       description,
       rating,
     });
-    res.json({ created: 'ok', book });
+    res.json(book);
   } catch (error) {
     next(error);
   }
@@ -62,7 +59,7 @@ router.put('/:bookId', async (req, res, next) => {
       description,
       rating,
     });
-    res.json({ updated: 'ok', book });
+    res.json(book);
   } catch (error) {
     next(error);
   }
@@ -72,10 +69,7 @@ router.delete('/:bookId', async (req, res, next) => {
   const { bookId } = req.params;
   try {
     const book = await Book.findByIdAndDelete(bookId);
-    res.json({
-      deleted: 'ok',
-      book,
-    });
+    res.json(book);
   } catch (error) {
     next(error);
   }
