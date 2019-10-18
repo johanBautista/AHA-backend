@@ -11,7 +11,7 @@ const cors = require('cors');
 mongoose.set('useCreateIndex', true);
 mongoose.connect('mongodb://localhost/miBiblio', { useNewUrlParser: true });
 
-// const authRouter = require('./routes/auth');
+const authRouter = require('./routes/auth');
 const booksRouter = require('./routes/book');
 
 const app = express();
@@ -49,19 +49,22 @@ app.use(
 //   next();
 // });
 
-// app.use('/', authRouter);
+app.use('/', authRouter);
 app.use('/api/books', booksRouter);
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
-  next(createError(404));
+  res.status(404).json({ code: 'not found' });
 });
 
-// error handler
 app.use((err, req, res, next) => {
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
-  res.status(err.status || 500);
-  res.json(err);
+  // always log the error
+  console.error('ERROR', req.method, req.path, err);
+
+  // only render if the error ocurred before sending the response
+  if (!res.headersSent) {
+    res.status(500).json({ code: 'unexpected' });
+  }
 });
 
 module.exports = app;

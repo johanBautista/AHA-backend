@@ -9,53 +9,47 @@ const bcryptSalt = 10;
 
 const router = express.Router();
 
-/* GET signup page. */
-router.get('/signup', (req, res, next) => {
-  res.render('signup');
+router.get('/me', (req, res, next) => {
+  if (req.session.currentUser) {
+    res.status(200).json(req.session.currentUser);
+  } else {
+    res.status(404).json({ code: 'not-found' });
+  }
 });
 
-// create a user
 router.post('/signup', checkUsernameAndPasswordNotEmpty, async (req, res, next) => {
   const { username, password } = res.locals.auth;
   try {
     const user = await User.findOne({ username });
     if (user) {
-      req.flash('error', 'Usuario ya existe');
-      res.redirect('/signup');
-    } else {
-      const salt = bcrypt.genSaltSync(bcryptSalt);
-      const hashedPassword = bcrypt.hashSync(password, salt);
-
-      await User.create({ username, hashedPassword });
-      req.flash('info', 'user created');
-      res.redirect('/books');
+      return res.status(422).json({ code: 'username-not-unique' });
     }
-  } catch (error) {
-    req.flash('error', 'try again');
-    res.redirect('/signup');
-  }
-});
 
-router.get('/login', (req, res, next) => {
-  res.render('login');
+    const salt = bcrypt.genSaltSync(bcryptSalt);
+    const hashedPassword = bcrypt.hashSync(password, salt);
+
+    const newUser = await User.create({ username, hashedPassword });
+    req.session.currentUser = newUser;
+    return res.json(newUser);
+  } catch (error) {
+    next(error);
+  }
 });
 
 router.post('/login', checkUsernameAndPasswordNotEmpty, async (req, res, next) => {
   const { username, password } = res.locals.auth;
   try {
     const user = await User.findOne({ username });
-    if (user) {
-      if (bcrypt.compareSync(password, user.hashedPassword)) {
-        req.session.currentUser = user;
-        res.redirect('/books');
-      } else {
-        res.render('login', { error: 'usuario o contraseña incorrectos' });
-      }
-    } else {
-      res.redirect('/signup');
+    if (!user) {
+      return res.status(404).json({ code: 'not-found' });
     }
+    if (bcrypt.compareSync(password, user.hashedPassword)) {
+      req.session.currentUser = user;
+      return res.json(user);
+    }
+    return res.status(404).json({ code: 'not-found' });
   } catch (error) {
-    res.render('login', { error: 'error vuelve a intentarlo' });
+    next(error);
   }
 });
 
@@ -64,7 +58,7 @@ router.get('/logout', (req, res, next) => {
     if (err) {
       next(err);
     }
-    res.redirect('/login');
+    return res.status(204).send();
   });
 });
 
