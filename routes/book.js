@@ -4,10 +4,10 @@ const express = require('express');
 const Book = require('../models/Book');
 
 const router = express.Router();
-const { checkIfLoggedIn } = require('../middlewares');
+// const { checkIfLoggedIn } = require('../middlewares');
 
 /* GET books listing. */
-router.get('/', checkIfLoggedIn, async (req, res, next) => {
+router.get('/', async (req, res, next) => {
   try {
     const books = await Book.find();
     res.json(books);
@@ -16,7 +16,7 @@ router.get('/', checkIfLoggedIn, async (req, res, next) => {
   }
 });
 
-router.get('/:bookId', checkIfLoggedIn, async (req, res, next) => {
+router.get('/:bookId', async (req, res, next) => {
   const { bookId } = req.params;
   try {
     const book = await Book.findById(bookId);
@@ -30,7 +30,7 @@ router.get('/:bookId', checkIfLoggedIn, async (req, res, next) => {
   }
 });
 
-router.post('/', checkIfLoggedIn, async (req, res, next) => {
+router.post('/', async (req, res, next) => {
   const {
     title, author, description, rating,
   } = req.body;
@@ -47,7 +47,7 @@ router.post('/', checkIfLoggedIn, async (req, res, next) => {
   }
 });
 
-router.put('/:bookId', checkIfLoggedIn, async (req, res, next) => {
+router.put('/:bookId', async (req, res, next) => {
   const { bookId } = req.params;
   const {
     title, author, description, rating,
@@ -65,7 +65,7 @@ router.put('/:bookId', checkIfLoggedIn, async (req, res, next) => {
   }
 });
 
-router.delete('/:bookId', checkIfLoggedIn, async (req, res, next) => {
+router.delete('/:bookId', async (req, res, next) => {
   const { bookId } = req.params;
   try {
     const book = await Book.findByIdAndDelete(bookId);

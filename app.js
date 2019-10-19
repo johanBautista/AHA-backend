@@ -49,7 +49,7 @@ app.use(
 //   next();
 // });
 
-app.use('/', authRouter);
+// app.use('/', authRouter);
 app.use('/api/books', booksRouter);
 
 // catch 404 and forward to error handler
