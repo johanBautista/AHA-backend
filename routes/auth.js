@@ -13,7 +13,7 @@ router.get('/me', (req, res, next) => {
   if (req.session.currentUser) {
     res.status(200).json(req.session.currentUser);
   } else {
-    res.status(404).json({ code: 'not-found' });
+    res.status(401).json({ code: 'unauthorized' });
   }
 });
 
