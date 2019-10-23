@@ -7,12 +7,19 @@ const mongoose = require('mongoose');
 const session = require('express-session');
 const MongoStore = require('connect-mongo')(session);
 const cors = require('cors');
+require('dotenv').config();
 
 mongoose.set('useCreateIndex', true);
-mongoose.connect('mongodb://localhost/miBiblio', { useNewUrlParser: true });
+mongoose
+  .connect(process.env.MONGO_URL, { useNewUrlParser: true, useUnifiedTopology: true })
+  .then(() => {
+    console.log('connected to: ', process.env.MONGO_URL);
+  })
+  .catch((error) => {
+    console.error(error);
+  });
 
 const authRouter = require('./routes/auth');
-const booksRouter = require('./routes/book');
 
 const app = express();
 
@@ -28,7 +35,7 @@ app.use(
       mongooseConnection: mongoose.connection,
       ttl: 24 * 60 * 60, // 1 day
     }),
-    secret: 'ironhack',
+    secret: process.env.SECRET,
     resave: true,
     saveUninitialized: true,
     cookie: {
@@ -40,17 +47,16 @@ app.use(
 app.use(
   cors({
     credentials: true,
-    origin: ['http://localhost:3001'],
+    origin: [process.env.FRONTEND_URL],
   }),
 );
 
-// app.use((req, res, next) => {
-//   app.locals.currentUser = req.session.currentUser;
-//   next();
-// });
+app.use((req, res, next) => {
+  app.locals.currentUser = req.session.currentUser;
+  next();
+});
 
 app.use('/', authRouter);
-app.use('/api/books', booksRouter);
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
