@@ -13,7 +13,7 @@ El backend se ejecuta en el puerto 3001 por defecto
 | Method | Path | Description |
 |--------|------|-------------|
 | `get`  | `/auth/me` | Check if i'm logged |
-| `postt`  | `/auth/login` | Login |
+| `post`  | `/auth/login` | Login |
 | `post`  | `/auth/signup` | Signup |
 | `post`  | `/auth/logout` | Logout |
 | `get`  | `/auth/private` | Private route |
