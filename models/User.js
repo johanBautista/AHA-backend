@@ -4,11 +4,12 @@ const { Schema } = mongoose;
 
 const userSchema = new Schema(
   {
-    text: { type: String, required: true, unique: true },
-    // owner: { type: ObjecId, ref: "User", unique: true },
-    date: { type: Date },
-    location: { type: String },
-    theme: { type: String, required: true },
+    username: { type: String, required: true, unique: true },
+    hashedPassword: { type: String, required: true },
+    email: { type: String, unique: true },
+    password: { type: String, unique: true },
+    category: { type: String },
+    ocupation: { type: String },
   },
   {
     timestamps: {
