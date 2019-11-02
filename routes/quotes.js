@@ -8,7 +8,7 @@ router.post('/quotes', async (req, res, next) => {
   const {
     text, date, location, theme, owner,
   } = req.body;
-  console.log(typeof owner, 'que es esto');
+  // console.log(typeofowner, 'que es esto');
   try {
     const newQuote = await Quote.create({
       text, owner, date, location, theme,
