@@ -1,0 +1,81 @@
+crear ruta listar quotes desde backend hasta frontend
+
+BACKEND 
+
+=> app.js
+  const quoteRouter = require('./routes/quotes');
+  app.use('/api', quoteRouter);
+  // esto lo hacemos para crear nuestra nueva ruta en app que es el motor del backend.
+
+=> crear un archivo quotes.js en el folder de routes.
+
+=> quotes.js
+  
+  * importar express, modelo, router.
+  const express = require('express');
+  const Quote = require('../models/Quote');
+  const router = express.Router();
+ 
+  * crear ruta y añadir el metodo que buscara todas la quotes creadas
+  router.get('/quotes', async (req, res, next) => {
+  try {
+    const quotes = await Quote.find();
+    return res.json(quotes);
+  } catch (error) {
+    next(error);
+    }
+  });
+  // utilizo try/catch  y async/await si no lo hiciese asi lo haria por medio de 
+  promises (then/catch). al trabajar con react ya no devuelvo otras rutas sino devuelvo objetos
+  es decir .json para ello  utilizo una variable en donde guardo las operaciones de los metodos 
+  utilzados ( .create, .find, .findByIdAndUpdate, .findByIdAndDelete).
+
+=> en este punto exporto mi primera ruta y ya puedo ir a frontend, asi mismo tambien puedo definir
+las siguientes rutas que faltan para realizar el crud(post, put, delete)
+  module.exports = router;
+
+  * en este punto es importante comprobar con postman que las rutas esten correctas para ello utilizamos 
+  las siguientes config.
+
+  - GET     http://localhost:3001/api/quotes      =  listar quotes     => metodo .find()
+  - POST    http://localhost:3001/api/quotes      =  crear quotes      => metodo .create({obj. modelo})
+  - PUT     http://localhost:3001/api/quotes/:id  =  actualizar quotes => metodo .findByIdAndUpdate(id,{obj. modelo})
+  - DELETE  http://localhost:3001/api/quotes/:id  =  borrar quotes     => metodo .findByIdAndDelete(id)
+
+
+--------------------------------------------------------------/--------------------------------
+FRONTEND
+  
+// seguimos con listar las quotes. ahora desde frontend, una vez comprobado el potsman debemos haer 3 pasos generales
+  1. crear la ruta en app.js que es mi motor en frontend 
+  2. crear el componente QuoteList
+  3.comunicar backend con frontend con el quoteService
+
+=> app.js
+  import QuoteList from './views/QuoteList';                  // importar el componente 
+  <AnonRoute exact path="/quotes" component={QuoteList} />    // crear ruta dentro de Router
+
+=> QuoteList.js
+  crear componente y como primera medida comprobar que se comunica con la ruta pintando un bonito "hola!"
+  asi mismo importar el quoteService que es la frma de comunicarnos.
+
+=> quoteService.js 
+  aqui debemos importar axios, luego generar la func. que es por la cual nos comunicaremmos con el componente
+  para traer los datos del back al front 
+  getAllQuotes() {
+    return this.axios.get('/quotes')
+      .then(({ data: quotes }) => quotes)
+  }
+}
+
+=> QuoteList.js
+  * a partir de aqui ya tenemos los datos en el front ahora debemos terminar la config. del componente
+    1. state inicial del componente
+    2. metodos componentDidMount
+    3. pasar en el render el objeto/state
+    4. por medio de un .map iterar y subir las quotes y de cada una de ellas imprimir los valores de cada una de ellas.
+      
+      
+      QUEDA PENDIENTE EL TEMA DE LOGIN
+
+=> exportar el componente QuoteList que es el que usamos en la ruta.

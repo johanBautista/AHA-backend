@@ -20,6 +20,7 @@ mongoose
   });
 
 const authRouter = require('./routes/auth');
+const quoteRouter = require('./routes/quotes');
 
 const app = express();
 
@@ -57,6 +58,8 @@ app.use((req, res, next) => {
 });
 
 app.use('/', authRouter);
+
+app.use('/api', quoteRouter);
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {

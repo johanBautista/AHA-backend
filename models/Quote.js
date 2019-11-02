@@ -4,11 +4,12 @@ const { Schema } = mongoose;
 
 const userSchema = new Schema(
   {
-    text: { type: String, required: true, unique: true },
-    // owner: { type: ObjecId, ref: 'User', unique: true },
-    date: { type: Date },
+    text: { type: String },
+    owner: { type: Schema.Types.ObjectId, ref: 'User' },
+    // owner: { type: String },
+    date: { type: String },
     location: { type: String },
-    theme: { type: String, required: true },
+    theme: { type: String },
   },
   {
     timestamps: {
@@ -21,3 +22,4 @@ const userSchema = new Schema(
 const Quote = mongoose.model('Quote', userSchema);
 
 module.exports = Quote;
+// date debe estar como date no como string --ojo en modelo backend y en ruta-componen frontend
