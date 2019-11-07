@@ -71,24 +71,6 @@ router.get('/quotes/user/:id', async (req, res, next) => {
 });
 
 // ---------------------------------------------------------------------------------------------------------- actualizar quote seleccionada
-// router.put('/:bookId', async (req, res, next) => {
-//   const { bookId } = req.params;
-//   const {
-//     title, author, description, rating,
-//   } = req.body;
-//   try {
-//     const book = await Book.findByIdAndUpdate(bookId, {
-//       title,
-//       author,
-//       description,
-//       rating,
-//     });
-//     res.json(book);
-//   } catch (error) {
-//     next(error);
-//   }
-// });
-
 router.put('/quotes/:id', async (req, res, next) => {
   const { id } = req.params;
   const { text, date, location, theme } = req.body;
@@ -106,23 +88,6 @@ router.put('/quotes/:id', async (req, res, next) => {
 });
 
 // ----------------------------------------------------------------------------------------------------------  eliminar quote seleccionada
-// router.post('/:bookId/delete', checkIfLoggedIn, (req, res, next) => {
-//   const { bookId } = req.params;
-//   Book.findByIdAndDelete(bookId)
-//     .then(() => {
-//       res.redirect('/books');
-//     })
-//     .catch(next);
-// });
-// router.delete('/:bookId', async (req, res, next) => {
-//   const { bookId } = req.params;
-//   try {
-//     const book = await Book.findByIdAndDelete(bookId);
-//     res.json(book);
-//   } catch (error) {
-//     next(error);
-//   }
-// });
 router.delete('/quotes/:id', async (req, res, next) => {
   const { id } = req.params;
   try {
