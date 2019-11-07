@@ -6,8 +6,8 @@ const userSchema = new Schema(
   {
     username: { type: String, required: true, unique: true },
     hashedPassword: { type: String, required: true },
-    email: { type: String, unique: true },
-    password: { type: String, unique: true },
+    email: { type: String },
+    password: { type: String },
     category: { type: String },
     ocupation: { type: String },
   },

@@ -3,15 +3,17 @@ const Quote = require('../models/Quote');
 
 const router = express.Router();
 
-// crear quote
+// ------------------------------------------------------------ crear quote
 router.post('/quotes', async (req, res, next) => {
-  const {
-    text, date, location, theme, owner,
-  } = req.body;
+  const { text, date, location, theme, owner } = req.body;
   // console.log(typeofowner, 'que es esto');
   try {
     const newQuote = await Quote.create({
-      text, owner, date, location, theme,
+      text,
+      owner,
+      date,
+      location,
+      theme,
     });
     return res.json(newQuote);
   } catch (error) {
@@ -19,9 +21,9 @@ router.post('/quotes', async (req, res, next) => {
   }
 });
 
+// ------------------------------------------------------------ listar mis quote creadas userHome
 router.get('/quotes/:id', async (req, res, next) => {
   const { id } = req.params;
-  console.log(id);
   try {
     const quote = await Quote.findById({ _id: id });
     return res.json(quote);
@@ -31,6 +33,7 @@ router.get('/quotes/:id', async (req, res, next) => {
   // req.flash('prueba de lisatado'); PENSAR EN LA FORMA DE HACER NOTIFICACIONES
 });
 
+// ---------------------------------------------------------- listar todas las quotes creadas
 router.get('/quotes', async (req, res, next) => {
   try {
     const quotes = await Quote.find();
@@ -41,6 +44,20 @@ router.get('/quotes', async (req, res, next) => {
   // req.flash('prueba de lisatado'); PENSAR EN LA FORMA DE HACER NOTIFICACIONES
 });
 
+// ------------------------------------------------------------ editar quote userHome
+router.get('/quotes/edit/:id', async (req, res, next) => {
+  // const { quotes} = req.params;
+  try {
+    const quote = await Quote.findById();
+    return res.json(quote);
+  } catch (error) {
+    next(error);
+  }
+  // req.flash('prueba de lisatado'); PENSAR EN LA FORMA DE HACER NOTIFICACIONES
+});
+
+
+// ------------------------------------------------------------------- mostrar mi owner de la quote seleccionada
 router.get('/quotes/user/:id', async (req, res, next) => {
   const { id } = req.params;
   try {
@@ -53,11 +70,28 @@ router.get('/quotes/user/:id', async (req, res, next) => {
   // req.flash('prueba de lisatado'); PENSAR EN LA FORMA DE HACER NOTIFICACIONES
 });
 
+// ---------------------------------------------------------------------------------------------------------- actualizar quote seleccionada
+// router.put('/:bookId', async (req, res, next) => {
+//   const { bookId } = req.params;
+//   const {
+//     title, author, description, rating,
+//   } = req.body;
+//   try {
+//     const book = await Book.findByIdAndUpdate(bookId, {
+//       title,
+//       author,
+//       description,
+//       rating,
+//     });
+//     res.json(book);
+//   } catch (error) {
+//     next(error);
+//   }
+// });
+
 router.put('/quotes/:id', async (req, res, next) => {
   const { id } = req.params;
-  const {
-    text, date, location, theme,
-  } = req.body;
+  const { text, date, location, theme } = req.body;
   try {
     const quote = await Quote.findByIdAndUpdate(id, {
       text,
@@ -71,7 +105,25 @@ router.put('/quotes/:id', async (req, res, next) => {
   }
 });
 
-router.delete('/quotes/:id', async (req, res) => {
+// ----------------------------------------------------------------------------------------------------------  eliminar quote seleccionada
+// router.post('/:bookId/delete', checkIfLoggedIn, (req, res, next) => {
+//   const { bookId } = req.params;
+//   Book.findByIdAndDelete(bookId)
+//     .then(() => {
+//       res.redirect('/books');
+//     })
+//     .catch(next);
+// });
+// router.delete('/:bookId', async (req, res, next) => {
+//   const { bookId } = req.params;
+//   try {
+//     const book = await Book.findByIdAndDelete(bookId);
+//     res.json(book);
+//   } catch (error) {
+//     next(error);
+//   }
+// });
+router.delete('/quotes/:id', async (req, res, next) => {
   const { id } = req.params;
   try {
     const deleted = await Quote.findByIdAndDelete(id);
