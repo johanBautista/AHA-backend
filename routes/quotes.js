@@ -46,7 +46,8 @@ router.get('/quotes', async (req, res, next) => {
 
 // ------------------------------------------------------------ editar quote userHome
 router.get('/quotes/edit/:id', async (req, res, next) => {
-  // const { quotes} = req.params;
+  const { id } = req.params;
+
   try {
     const quote = await Quote.findById();
     return res.json(quote);
@@ -55,7 +56,6 @@ router.get('/quotes/edit/:id', async (req, res, next) => {
   }
   // req.flash('prueba de lisatado'); PENSAR EN LA FORMA DE HACER NOTIFICACIONES
 });
-
 
 // ------------------------------------------------------------------- mostrar mi owner de la quote seleccionada
 router.get('/quotes/user/:id', async (req, res, next) => {
