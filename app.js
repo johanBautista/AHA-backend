@@ -1,12 +1,12 @@
 const createError = require('http-errors');
 const express = require('express');
 const path = require('path');
-const cookieParser = require('cookie-parser');
+const cookieParser = require('cookie-parser'); // quitar para realizar el backend
 const logger = require('morgan');
 const mongoose = require('mongoose');
 const session = require('express-session');
 const MongoStore = require('connect-mongo')(session);
-const cors = require('cors');
+const cors = require('cors'); // actualizar linea para realizar el backend
 require('dotenv').config();
 
 mongoose.set('useCreateIndex', true);
@@ -24,10 +24,14 @@ const quoteRouter = require('./routes/quotes');
 
 const app = express();
 
+// app.set('trust proxy', true);
+// app.use(cors);
+// app.options('*', cors);
+
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser());
+app.use(cookieParser()); // quitar para realizar el backend
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(
@@ -41,11 +45,13 @@ app.use(
     saveUninitialized: true,
     cookie: {
       maxAge: 24 * 60 * 60 * 1000,
+      // sameSite:'none',
+      // secure:process.env.NODE_ENV === 'production',
     },
   }),
 );
 
-app.use(
+app.use( // quitar para realizar el backend
   cors({
     credentials: true,
     origin: [process.env.FRONTEND_URL],
