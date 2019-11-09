@@ -10,11 +10,14 @@ require('dotenv').config();
 
 mongoose.set('useCreateIndex', true);
 mongoose
-  .connect(process.env.MONGO_URL, { useNewUrlParser: true, useUnifiedTopology: true })
+  .connect(process.env.MONGO_URL, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  })
   .then(() => {
     console.log('connected to: ', process.env.MONGO_URL);
   })
-  .catch((error) => {
+  .catch(error => {
     console.error(error);
   });
 
@@ -41,11 +44,11 @@ app.use(
     secret: process.env.SECRET,
     resave: true,
     saveUninitialized: true,
-    name:'aha-moment',
+    name: 'aha-moment',
     cookie: {
       maxAge: 24 * 60 * 60 * 1000,
-      sameSite:'none',
-      secure:process.env.NODE_ENV === 'production',
+      sameSite: 'none',
+      secure: process.env.NODE_ENV === 'production',
     },
   }),
 );
