@@ -2,6 +2,7 @@ const createError = require('http-errors');
 const express = require('express');
 const path = require('path');
 const logger = require('morgan');
+const multer = require('multer'); // cloudinary process
 const mongoose = require('mongoose');
 const session = require('express-session');
 const MongoStore = require('connect-mongo')(session);
@@ -10,7 +11,10 @@ require('dotenv').config();
 
 mongoose.set('useCreateIndex', true);
 mongoose
-  .connect(process.env.MONGO_URL, { useNewUrlParser: true, useUnifiedTopology: true })
+  .connect(process.env.MONGO_URL, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  })
   .then(() => {
     console.log('connected to: ', process.env.MONGO_URL);
   })
@@ -32,6 +36,14 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
 
+const storage = multer.diskStorage({
+  destination: path.join(__dirname, 'public/uploads'),
+  filename: (req, file, cb) => {
+    cb(null, new Date().getTime() + path.extname(file.originalname));
+  },
+});
+app.use(multer({ storage }).single('image')); // process cloudinary
+
 app.use(
   session({
     store: new MongoStore({
@@ -41,11 +53,11 @@ app.use(
     secret: process.env.SECRET,
     resave: true,
     saveUninitialized: true,
-    name:'aha-moment',
+    name: 'aha-moment',
     cookie: {
       maxAge: 24 * 60 * 60 * 1000,
-      sameSite:'none',
-      secure:process.env.NODE_ENV === 'production',
+      sameSite: 'none',
+      secure: process.env.NODE_ENV === 'production',
     },
   }),
 );

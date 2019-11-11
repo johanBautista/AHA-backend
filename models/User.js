@@ -10,6 +10,8 @@ const userSchema = new Schema(
     password: { type: String },
     category: { type: String },
     ocupation: { type: String },
+    imageUrL: String,
+    public_id: String,
   },
   {
     timestamps: {
