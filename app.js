@@ -6,6 +6,8 @@ const multer = require('multer'); // cloudinary process
 const mongoose = require('mongoose');
 const session = require('express-session');
 const MongoStore = require('connect-mongo')(session);
+const flash = require('connect-flash');
+const { notifications } = require('./middlewares/index');
 const cors = require('cors')({ origin: true, credentials: true });
 require('dotenv').config();
 
@@ -62,6 +64,8 @@ app.use(
   }),
 );
 
+app.use(flash());
+
 // app.use( // quitar para realizar el backend
 //   cors({
 //     credentials: true,
@@ -73,6 +77,8 @@ app.use((req, res, next) => {
   app.locals.currentUser = req.session.currentUser;
   next();
 });
+
+app.use(notifications(app));
 
 app.use('/', authRouter);
 
