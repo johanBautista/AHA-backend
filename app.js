@@ -26,6 +26,7 @@ mongoose
 
 const authRouter = require('./routes/auth');
 const quoteRouter = require('./routes/quotes');
+const eventRouter = require('./routes/event');
 
 const app = express();
 
@@ -83,6 +84,8 @@ app.use(notifications(app));
 app.use('/', authRouter);
 
 app.use('/api', quoteRouter);
+
+app.use('/', eventRouter);
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
