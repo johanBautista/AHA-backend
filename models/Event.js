@@ -8,6 +8,7 @@ const eventSchema = new Schema(
     date: String,
     location: String,
     description: String,
+    owner: { type: Schema.Types.ObjectId, ref: 'User' },
   },
   {
     timestamps: {

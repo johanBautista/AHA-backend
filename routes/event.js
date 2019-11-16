@@ -7,13 +7,17 @@ const router = express.Router();
 // ------------------------------------------------------------ crear evento
 router.post('/events', async (req, res, next) => {
   const { title, description, date, location } = req.body;
+  const { currentUser:{ _id }} = req.session;
+  console.log(_id);
+  
   // console.log(typeofowner, 'que es esto');
   try {
     const newEvent = await Event.create({
       title,
       description,
       date,
-      location
+      location,
+      owner: _id,
     });
     return res.json(newEvent);
   } catch (error) {
@@ -22,10 +26,10 @@ router.post('/events', async (req, res, next) => {
 });
 
 // ------------------------------------------------------------ listar mis eventos creadas userHome
-router.get('/events/:id', async (req, res, next) => {
+router.get('/events/user/:id', async (req, res, next) => {
   const { id } = req.params;
   try {
-    const event = await Event.findById({ _id: id });
+    const event = await Event.find({ owner: id });
     return res.json(event);
   } catch (error) {
     next(error);
