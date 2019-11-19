@@ -97,4 +97,16 @@ router.delete('/quotes/:id', async (req, res, next) => {
     next(error);
   }
 });
+
+// router.put('/:id/upload', uploader.single('imageUrl'), async(req, res, next) =>{
+//   if(!req.file){
+//     next(new Error('No file uploaded!'));
+//   }try{
+//     const user= await user.findByIdAndUpdate(req.findById.id, {
+//       $set:{'img.description':req.body.description,'img.imageUrl':req.file.secure_url},
+//     })console.log(user);
+//     res.json({secure_url:req.file.secure_url});
+//   }catch(err){next(err);}
+// });
+
 module.exports = router;

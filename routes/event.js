@@ -54,8 +54,8 @@ router.delete('/events/:id', async (req, res, next) => {
     const deleted = await Event.findByIdAndDelete(id);
     return res.json(deleted);
   } catch (error) {
-    next(error)
+    next(error);
   }
-})
+});
 
 module.exports = router;
