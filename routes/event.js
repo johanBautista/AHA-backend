@@ -8,9 +8,7 @@ const router = express.Router();
 router.post('/events', async (req, res, next) => {
   const { title, description, date, location } = req.body;
   const { currentUser:{ _id }} = req.session;
-  console.log(_id);
   
-  // console.log(typeofowner, 'que es esto');
   try {
     const newEvent = await Event.create({
       title,
@@ -25,7 +23,7 @@ router.post('/events', async (req, res, next) => {
   }
 });
 
-// ------------------------------------------------------------ listar mis eventos creadas userHome
+// ----- listar mis eventos creadas userHome
 router.get('/events/user/:id', async (req, res, next) => {
   const { id } = req.params;
   try {
@@ -36,7 +34,7 @@ router.get('/events/user/:id', async (req, res, next) => {
   }
 });
 
-// ------------------------------------------------------------ listar todos los events creados
+// -------- listar todos los events creados
 router.get('/events', async (req, res, next) => {
   try {
     const event = await Event.find();
@@ -47,7 +45,7 @@ router.get('/events', async (req, res, next) => {
   // req.flash('prueba de lisatado'); PENSAR EN LA FORMA DE HACER NOTIFICACIONES
 });
 
-// ------------------------------------------------------------ borrar events
+// ------- borrar events
 router.delete('/events/:id', async (req, res, next) => {
   const { id } = req.params;
   try {

@@ -3,10 +3,9 @@ const Quote = require('../models/Quote');
 
 const router = express.Router();
 
-// ------------------------------------------------------------ crear quote
+// -------- crear quote
 router.post('/quotes', async (req, res, next) => {
   const { text, date, location, theme, owner } = req.body;
-  // console.log(typeofowner, 'que es esto');
   try {
     const newQuote = await Quote.create({
       text,
@@ -21,7 +20,7 @@ router.post('/quotes', async (req, res, next) => {
   }
 });
 
-// ------------------------------------------------------------ listar mis quote creadas userHome
+// ---- listar mis quote creadas userHome
 router.get('/quotes/:id', async (req, res, next) => {
   const { id } = req.params;
   try {
@@ -33,7 +32,7 @@ router.get('/quotes/:id', async (req, res, next) => {
   // req.flash('prueba de lisatado'); PENSAR EN LA FORMA DE HACER NOTIFICACIONES
 });
 
-// ---------------------------------------------------------- listar todas las quotes creadas
+// ----- listar todas las quotes creadas
 router.get('/quotes', async (req, res, next) => {
   try {
     const quotes = await Quote.find();
@@ -44,7 +43,7 @@ router.get('/quotes', async (req, res, next) => {
   // req.flash('prueba de lisatado'); PENSAR EN LA FORMA DE HACER NOTIFICACIONES
 });
 
-// ------------------------------------------------------------ editar quote userHome
+// ---- editar quote userHome
 router.get('/quotes/edit/:id', async (req, res, next) => {
   const { id } = req.params;
 
@@ -57,7 +56,7 @@ router.get('/quotes/edit/:id', async (req, res, next) => {
   // req.flash('prueba de lisatado'); PENSAR EN LA FORMA DE HACER NOTIFICACIONES
 });
 
-// ------------------------------------------------------------------- mostrar mi owner de la quote seleccionada
+// ---- mostrar mi owner de la quote seleccionada
 router.get('/quotes/user/:id', async (req, res, next) => {
   const { id } = req.params;
   try {
@@ -70,7 +69,7 @@ router.get('/quotes/user/:id', async (req, res, next) => {
   // req.flash('prueba de lisatado'); PENSAR EN LA FORMA DE HACER NOTIFICACIONES
 });
 
-// ---------------------------------------------------------------------------------------------------------- actualizar quote seleccionada
+// --- actualizar quote seleccionada
 router.put('/quotes/:id', async (req, res, next) => {
   const { id } = req.params;
   const { text, date, location, theme } = req.body;
@@ -87,7 +86,7 @@ router.put('/quotes/:id', async (req, res, next) => {
   }
 });
 
-// ----------------------------------------------------------------------------------------------------------  eliminar quote seleccionada
+// --- eliminar quote seleccionada
 router.delete('/quotes/:id', async (req, res, next) => {
   const { id } = req.params;
   try {
@@ -97,16 +96,5 @@ router.delete('/quotes/:id', async (req, res, next) => {
     next(error);
   }
 });
-
-// router.put('/:id/upload', uploader.single('imageUrl'), async(req, res, next) =>{
-//   if(!req.file){
-//     next(new Error('No file uploaded!'));
-//   }try{
-//     const user= await user.findByIdAndUpdate(req.findById.id, {
-//       $set:{'img.description':req.body.description,'img.imageUrl':req.file.secure_url},
-//     })console.log(user);
-//     res.json({secure_url:req.file.secure_url});
-//   }catch(err){next(err);}
-// });
 
 module.exports = router;
